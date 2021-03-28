@@ -1,3 +1,0 @@
-/home/greak/mycodes/codecraft/build/CMakeFiles/rebuild_cache.dir
-/home/greak/mycodes/codecraft/build/CMakeFiles/edit_cache.dir
-/home/greak/mycodes/codecraft/build/CMakeFiles/CodeCraft-2021.dir

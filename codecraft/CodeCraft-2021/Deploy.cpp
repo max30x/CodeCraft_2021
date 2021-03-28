@@ -128,13 +128,18 @@ int Deploy::whichnode_vm(Server_t* now,int cpurq,int memrq,bool multi){
         if (!_a&&!_b)
             return -1;
         else if (_a&&_b){
-        
+            int _pacpu = now->cpua-cpurq;
+            int _pamem = now->mema-memrq;
+            int _pbcpu = now->cpub-cpurq;
+            int _pbmem = now->memb-memrq;
+            return ((_pacpu+_pamem)<(_pbcpu+_pbmem)) ? A : B;
+        #if 0
             int _mincpua = _min(now->cpua-cpurq,now->cpub);
             int _mincpub = _min(now->cpua,now->cpub-cpurq);
             int _minmema = _min(now->mema-memrq,now->memb);
             int _minmemb = _min(now->mema,now->mem-memrq);
             return ((_mincpua+_minmema)>(_mincpub+_minmemb))?A:B;
-        #if 0
+        
             int _cpua = absub(now->cpua,cpurq);
             int _mema = absub(now->mema,memrq);
             int _cpub = absub(now->cpub,cpurq);

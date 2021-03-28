@@ -133,28 +133,6 @@ int Deploy::whichnode_vm(Server_t* now,int cpurq,int memrq,bool multi){
             int _pbcpu = now->cpub-cpurq;
             int _pbmem = now->memb-memrq;
             return ((_pacpu+_pamem)<(_pbcpu+_pbmem)) ? A : B;
-        #if 0
-            int _mincpua = _min(now->cpua-cpurq,now->cpub);
-            int _mincpub = _min(now->cpua,now->cpub-cpurq);
-            int _minmema = _min(now->mema-memrq,now->memb);
-            int _minmemb = _min(now->mema,now->mem-memrq);
-            return ((_mincpua+_minmema)>(_mincpub+_minmemb))?A:B;
-        
-            int _cpua = absub(now->cpua,cpurq);
-            int _mema = absub(now->mema,memrq);
-            int _cpub = absub(now->cpub,cpurq);
-            int _memb = absub(now->memb,memrq);
-            int diff1 = _cpua+_mema;
-            int diff2 = _cpub+_memb;
-            //if (diff1==diff2){
-                //double _cmratio = req_cmratio();
-                //double _diff1 = absub((double)_cpua/(double)_mema,_cmratio);
-                //double _diff2 = absub((double)_cpub/(double)_memb,_cmratio);
-                //return (_diff1>_diff2) ? A : B;
-                //return B;
-            //}
-            return (diff1>diff2) ? A : B;
-        #endif
         }
         else if (_a)
             return A;
@@ -195,21 +173,6 @@ void Deploy::optimize_servers(int day){
         for (int j=i+1;j<_size;++j)
             servers0[i][j] = merge_server(dservers,i,j,day);
     }
-#if 0
-    std::cout<<day<<"\n";
-    for (int i=0;i<_size;++i){
-        for (int j=i;j<_size;++j){
-            Server_t* snow = servers0[i][j];
-            if (snow!=nullptr){
-                std::cout<<i<<" "<<j<<" ";
-                std::cout<<snow->cpu<<" "
-                        <<snow->mem<<" "
-                        <<snow->hcost<<" "
-                        <<snow->mcost<<"\n";
-            }
-        }
-    }
-#endif
     unsigned long nowcost=0,mincost=INT32_MAX;
     std::vector<int> costs;
     std::vector<int> indexs;
@@ -272,14 +235,6 @@ void Deploy::optimize_servers(int day){
                 delete servers0[i][j];
         }
     }
-#if 0
-    std::cout<<"costmin:"<<mincost<<" costnow:"<<nowcost<<"\n";
-    //std::cout<<day<<" "<<_size<<"\n";
-    for (int i=0,ei=path.size();i<ei;++i)
-       std::cout<<path[i]<<" ";
-    std::cout<<"\n";
-    //std::cout<<day<<" "<<costmin<<"\n";
-#endif
     servers.insert(std::make_pair(day,__servers));
 }
 
@@ -334,36 +289,12 @@ void Deploy::bind_server(const Request_t& req){
             break;
         }
     }
-#if 0
-    if (!serverseq.empty()){
-        std::vector<unsigned long> _servers;
-        for (int i=0,ei=serverseq.size();i<ei;++i)
-            _servers.push_back((unsigned long)serverseq[i]);
-        auto sfunc = [&](const unsigned long& _s1,const unsigned long& _s2){
-            Server_t* s1 = (Server_t*)_s1;
-            Server_t* s2 = (Server_t*)_s2;
-            return (s1->_cpuamin+s1->_memamin+s1->_cpubmin+s1->_membmin)<
-                    (s2->_cpuamin+s2->_memamin+s2->_cpubmin+s2->_membmin);
-        };
-        std::sort(_servers.begin(),_servers.end(),sfunc);
-        for (int i=0,ei=serverseq.size();i<ei;++i){
-            Server_t* now = serverseq[i];
-            ntype = whichnode_vm(now,cpurq,memrq,vt.multi);
-            if (ntype==-1)
-                continue;
-            picked = now;
-            break;
-        }
-    }
-#endif
     if (picked==nullptr){
         int _cpurq = cpurq<<1;
         int _memrq = memrq<<1; 
-        //picked = types->new_server(_cpurq,_memrq,req.day);
         picked = new_server(_cpurq,_memrq,req.day,serverid++,true);
         picked->idle = false;
         lappend(&serverlive,picked,llive);
-        //serverseq.push_back(picked);
         
         std::unordered_map<int,std::vector<Server_t*>>::iterator it;
         it = servers.find(req.day);

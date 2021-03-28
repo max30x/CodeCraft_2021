@@ -53,9 +53,6 @@ typedef struct SType{
     :cpu(cpu),mem(mem),hcost(hcost),mcost(mcost),name(name){}
 }SType_t;
 
-#define RUNNING 0
-#define IDLE 1
-
 typedef struct Server:SType{
     bool idle;
     unsigned long id;

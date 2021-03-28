@@ -51,13 +51,10 @@ void Types::init_smodels_best(int nday){
         std::vector<SType_t> _smodels;
         for (int k=0,ek=smodels.size();k<ek;++k)
             _smodels.push_back(smodels[k]);
-        double _c=0.25,_m=0.18;
         auto sfunc = [&](const SType_t& s1,const SType_t& s2){
             double cost1 = s1.hcost+s1.mcost*(nday-i+1);
             double cost2 = s2.hcost+s2.mcost*(nday-i+1);
-            double cmcost1 = cost1/s1.cpu*_c+cost1/s1.mem*_m;
-            double cmcost2 = cost2/s2.cpu*_c+cost2/s2.mem*_m;
-            return cmcost1<cmcost2;
+            return cost1<cost2;
         };
         std::sort(_smodels.begin(),_smodels.end(),sfunc);
         smodels_best.insert(std::make_pair(i,_smodels));

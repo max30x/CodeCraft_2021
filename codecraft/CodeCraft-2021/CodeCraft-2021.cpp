@@ -43,7 +43,6 @@ int main(){
     types.init_smodels_best(nday);
 
     hw::Deploy* dp = new hw::Deploy(&types,nday,&requests);
-    //std::cout<<dp->req_cmratio()<<"\n";
     dp->deal_req();
     dp->printr();
     //std::cout<<"cost:"<<dp->my_cost()<<"\n";
